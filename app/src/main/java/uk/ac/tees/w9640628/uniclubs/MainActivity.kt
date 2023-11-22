@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import uk.ac.tees.w9640628.uniclubs.ui.screens.AppNavigation
 import uk.ac.tees.w9640628.uniclubs.ui.theme.UniClubsTheme
 
 class MainActivity : ComponentActivity() {
@@ -29,7 +30,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    UniClubs()
+                    AppNavigation()
                 }
             }
         }
@@ -58,6 +59,6 @@ fun UniClubs(modifier: Modifier = Modifier) {
 @Composable
 fun UniClubsPreview() {
     UniClubsTheme {
-        UniClubs()
+        AppNavigation()
     }
 }

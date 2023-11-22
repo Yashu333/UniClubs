@@ -1,13 +1,9 @@
-package uk.ac.tees.w9640628.uniclubs.ui
+package uk.ac.tees.w9640628.uniclubs.ui.screens
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,31 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import uk.ac.tees.w9640628.uniclubs.R
 import uk.ac.tees.w9640628.uniclubs.ui.theme.UniClubsTheme
 
-class HomePage : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            UniClubsTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    homePage()
-                }
-            }
-        }
-    }
-}
 
 @Composable
-fun homePage(modifier: Modifier = Modifier) {
+fun HomePage(modifier: Modifier = Modifier,onJoinClicked: (String) -> Unit = {}) {
     Column(
         modifier = modifier
             .background(MaterialTheme.colorScheme.surface)
@@ -57,13 +36,14 @@ fun homePage(modifier: Modifier = Modifier) {
         MakeCard(
             imgId = R.drawable.sportsclub ,
             titleId = "Football Club" ,
-            descriptionId = "A place for all the football lovers."
+            descriptionId = "A place for all the football lovers.",
+            onJoinClicked
         )
 
         MakeCard(
             imgId = R.drawable.artclub ,
             titleId = "Art Club" ,
-            descriptionId = "For people who can redefine the world with art. Join us"
+            descriptionId = "For people who can redefine the world with art. Join us",onJoinClicked
         )
 
     }
@@ -74,6 +54,7 @@ fun MakeCard(
     imgId: Int,
     titleId: String,
     descriptionId: String,
+    onJoinClicked: (String) -> Unit = {},
     modifier: Modifier = Modifier){
     Card(
         colors = CardDefaults.cardColors(
@@ -104,7 +85,7 @@ fun MakeCard(
                 modifier = modifier.padding(4.dp)
             )
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {onJoinClicked},
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.tertiary,
                     contentColor = Color.White),
@@ -120,6 +101,6 @@ fun MakeCard(
 @Composable
 fun GreetingPreview2() {
     UniClubsTheme(useDarkTheme = false) {
-        homePage()
+        HomePage()
     }
 }

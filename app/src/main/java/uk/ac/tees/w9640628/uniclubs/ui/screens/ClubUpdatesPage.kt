@@ -1,4 +1,4 @@
-package uk.ac.tees.w9640628.uniclubs.ui
+package uk.ac.tees.w9640628.uniclubs.ui.screens
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
