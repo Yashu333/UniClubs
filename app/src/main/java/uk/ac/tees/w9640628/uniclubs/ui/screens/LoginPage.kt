@@ -13,6 +13,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
@@ -26,10 +27,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import uk.ac.tees.w9640628.uniclubs.ui.theme.UniClubsTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
+import uk.ac.tees.w9640628.uniclubs.viewmodels.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginPage(modifier: Modifier = Modifier, onLoginClicked: (String) -> Unit = {}) {
+fun LoginPage(modifier: Modifier = Modifier, navController: NavHostController, viewModel: LoginViewModel = viewModel(), onLoginClicked: (Boolean) -> Unit = {}) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     Column(
@@ -57,8 +61,10 @@ fun LoginPage(modifier: Modifier = Modifier, onLoginClicked: (String) -> Unit = 
         )
         Button(
             onClick = {
-                onLoginClicked(email)
-                      },
+                viewModel.loginUser(email, password) { isLoginSuccessful ->
+                        onLoginClicked(isLoginSuccessful)
+                    }
+                },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 contentColor = Color.White),
@@ -68,14 +74,33 @@ fun LoginPage(modifier: Modifier = Modifier, onLoginClicked: (String) -> Unit = 
             Text("Login")
         }
 
+        Spacer(modifier = modifier.height(8.dp))
+        TextButton(
+            onClick = {
+                navController.navigate("register")
+            }
+        ) {
+            Text(
+                "Not a user, Register here",
+                fontSize = 16.sp
+            )
+        }
+
     }
 }
 
 @Preview
 @Composable
-fun LoginPreview(){
+fun LoginPagePreview() {
+    // Initialize a NavController for preview
+    val navController = rememberNavController()
+
+    // Use the LoginPage composable for preview
     UniClubsTheme(useDarkTheme = false) {
-        LoginPage()
+        LoginPage(
+            navController = navController,
+            viewModel = LoginViewModel()
+        )
     }
 }
 

@@ -1,10 +1,13 @@
 package uk.ac.tees.w9640628.uniclubs.ui.screens
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
+import uk.ac.tees.w9640628.uniclubs.viewmodels.LoginViewModel
 
 enum class UniClubsScreen() {
     Login,
@@ -18,14 +21,20 @@ fun AppNavigation(){
     val navController: NavHostController = rememberNavController()
 
     NavHost(navController = navController , startDestination = "login" ){
-        composable("login"){
-            LoginPage(
-                onLoginClicked = {
-                    email ->
-                    navController.navigate("home")
-                }
-            )
-        }
+            composable("register"){
+                RegisterPage()
+            }
+            composable("login") {
+                LoginPage(
+                    navController = navController,
+                    viewModel = remember { LoginViewModel() },
+                    onLoginClicked = { isLoginSuccessful ->
+                        if (isLoginSuccessful) {
+                            navController.navigate("home")
+                        }
+                    }
+                )
+            }
         composable("home"){
             HomePage(
                 onJoinClicked = {navController.navigate("CreateClub")}

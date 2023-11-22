@@ -1,5 +1,6 @@
 package uk.ac.tees.w9640628.uniclubs.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -24,13 +27,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import uk.ac.tees.w9640628.uniclubs.ui.theme.UniClubsTheme
 import uk.ac.tees.w9640628.uniclubs.viewmodels.RegisterViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterPage(modifier: Modifier = Modifier, onRegisterClicked: (String) -> Unit = {}) {
+fun RegisterPage(modifier: Modifier = Modifier, viewModel: RegisterViewModel = viewModel(), onRegistrationComplete: (String) -> Unit = {}) {
 
     var firstName by remember {mutableStateOf("")}
     var lastName by remember {mutableStateOf("")}
@@ -71,7 +76,9 @@ fun RegisterPage(modifier: Modifier = Modifier, onRegisterClicked: (String) -> U
         )
         Button(
             onClick = {
-
+                viewModel.registerUser(email, password)
+                Log.d("User","is Registered")
+                onRegistrationComplete
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.tertiary,
@@ -87,9 +94,7 @@ fun RegisterPage(modifier: Modifier = Modifier, onRegisterClicked: (String) -> U
 
 @Preview
 @Composable
-fun RegisterPreview(){
-    UniClubsTheme(useDarkTheme = false) {
-        RegisterPage()
-    }
+fun RegisterPagePreview() {
+
 }
 
