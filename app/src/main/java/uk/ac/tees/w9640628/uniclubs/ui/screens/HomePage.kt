@@ -13,6 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -22,38 +23,39 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.lazy.items
 import uk.ac.tees.w9640628.uniclubs.R
+import uk.ac.tees.w9640628.uniclubs.data.Club
+import uk.ac.tees.w9640628.uniclubs.data.ClubData
 import uk.ac.tees.w9640628.uniclubs.ui.theme.UniClubsTheme
 
-
 @Composable
-fun HomePage(modifier: Modifier = Modifier,onJoinClicked: (String) -> Unit = {}) {
+fun HomePage(modifier: Modifier = Modifier,clubList : List<Club>,onJoinClicked: (String) -> Unit = {}) {
     Column(
         modifier = modifier
             .background(MaterialTheme.colorScheme.surface)
             .fillMaxSize()
     ) {
-        MakeCard(
-            imgId = R.drawable.sportsclub ,
-            titleId = "Football Club" ,
-            descriptionId = "A place for all the football lovers.",
-            onJoinClicked
-        )
-
-        MakeCard(
-            imgId = R.drawable.artclub ,
-            titleId = "Art Club" ,
-            descriptionId = "For people who can redefine the world with art. Join us",onJoinClicked
-        )
+        ClubList(clubList = ClubData().loadClubs())
 
     }
 }
 
 @Composable
+fun ClubList(clubList: List<Club>, modifier: Modifier = Modifier){
+    LazyColumn(modifier = modifier) {
+        items(clubList) { club ->
+            MakeCard(
+                club = club,
+                modifier = Modifier.padding(0.dp)
+            )
+        }
+    }
+}
+
+@Composable
 fun MakeCard(
-    imgId: Int,
-    titleId: String,
-    descriptionId: String,
+    club: Club,
     onJoinClicked: (String) -> Unit = {},
     modifier: Modifier = Modifier){
     Card(
@@ -67,7 +69,7 @@ fun MakeCard(
             .padding(12.dp)
         ){
             Image(
-                painter = painterResource(imgId),
+                painter = painterResource(club.imageResId),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -75,12 +77,12 @@ fun MakeCard(
                 contentScale = ContentScale.Crop
             )
             Text(
-                text = titleId,
+                text = club.name,
                 fontSize = 24.sp,
                 modifier = modifier.padding(4.dp)
             )
             Text(
-                text = descriptionId,
+                text = club.description,
                 fontSize = 15.sp,
                 modifier = modifier.padding(4.dp)
             )
@@ -101,6 +103,6 @@ fun MakeCard(
 @Composable
 fun GreetingPreview2() {
     UniClubsTheme(useDarkTheme = false) {
-        HomePage()
+        HomePage(clubList = ClubData().loadClubs())
     }
 }
