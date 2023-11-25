@@ -23,15 +23,9 @@ enum class UniClubsScreen() {
 fun AppNavigation(){
     val navController: NavHostController = rememberNavController()
 
-    NavHost(navController = navController , startDestination = "login" ){
-            composable("register"){
-                RegisterPage(
-                    viewModel = remember { RegisterViewModel() },
-                    onRegistrationSuccessful = { message ->
-                            navController.navigate("login")
-                    }
-                )
-            }
+    NavHost(navController = navController , startDestination = "loginGraph" ){
+
+        navigation(startDestination = "login",route="loginGraph"){
             composable("login") {
                 LoginPage(
                     navController = navController,
@@ -43,6 +37,17 @@ fun AppNavigation(){
                     }
                 )
             }
+        composable("register"){
+            RegisterPage(
+                viewModel = remember { RegisterViewModel() },
+                onRegistrationSuccessful = { message ->
+                    navController.navigate("home"){
+                        popUpTo("login")
+                    }
+                }
+            )
+        }
+        }
         composable("home"){
             HomePage(
                 clubList = ClubData().loadClubs(),
