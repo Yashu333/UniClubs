@@ -166,7 +166,7 @@ fun LoginPage(
     }
 }
 
-// Function to validate email format
+// validate email format
 private fun isValidEmail(email: String): Boolean {
     return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
@@ -175,10 +175,8 @@ private fun isValidEmail(email: String): Boolean {
 @Preview
 @Composable
 fun LoginPagePreview() {
-    // Initialize a NavController for preview
     val navController = rememberNavController()
 
-    // Use the LoginPage composable for preview
     UniClubsTheme(useDarkTheme = false) {
         LoginPage(
             navController = navController,

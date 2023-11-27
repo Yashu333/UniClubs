@@ -51,7 +51,8 @@ fun AppNavigation(){
         composable("home"){
             HomePage(
                 clubList = ClubData().loadClubs(),
-                onJoinClicked = {navController.navigate("CreateClub")}
+                navController = navController,
+                onJoinClicked = {}
             )
         }
         composable("CreateClub"){

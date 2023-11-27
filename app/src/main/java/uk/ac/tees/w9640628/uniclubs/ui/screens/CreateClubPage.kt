@@ -20,6 +20,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import uk.ac.tees.w9640628.uniclubs.R
@@ -28,6 +32,10 @@ import uk.ac.tees.w9640628.uniclubs.ui.theme.UniClubsTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateClub(modifier: Modifier = Modifier) {
+
+    var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+
     Surface() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -53,13 +61,17 @@ fun CreateClub(modifier: Modifier = Modifier) {
             }
             Spacer(modifier = modifier.height(28.dp))
             TextField(
-                value = "Enter the title" ,
-                onValueChange = {},
+                value = title ,
+                onValueChange = {title = it},
+                label = { Text("Title") },
+                singleLine = true,
             )
             Spacer(modifier = modifier.height(12.dp))
             TextField(
-                value = "Enter the description" ,
-                onValueChange = {},
+                value = description ,
+                onValueChange = {description = it},
+                label = { Text("Description") },
+                singleLine = true,
             )
             Spacer(modifier = modifier.height(12.dp))
             Button(onClick = { /*TODO*/ }) {
