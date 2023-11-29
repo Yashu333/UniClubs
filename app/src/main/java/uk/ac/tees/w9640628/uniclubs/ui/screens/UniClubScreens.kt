@@ -2,13 +2,14 @@ package uk.ac.tees.w9640628.uniclubs.ui.screens
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
-import uk.ac.tees.w9640628.uniclubs.data.ClubData
+import uk.ac.tees.w9640628.uniclubs.viewmodels.ClubViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.LoginViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.RegisterViewModel
 
@@ -50,7 +51,7 @@ fun AppNavigation(){
         }
         composable("home"){
             HomePage(
-                clubList = ClubData().loadClubs(),
+                viewModel = ClubViewModel(),
                 navController = navController,
                 onJoinClicked = {}
             )

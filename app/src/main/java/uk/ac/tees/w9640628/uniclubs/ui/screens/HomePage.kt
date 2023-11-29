@@ -2,7 +2,6 @@ package uk.ac.tees.w9640628.uniclubs.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -10,8 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -44,11 +41,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.rememberDrawerState
 import uk.ac.tees.w9640628.uniclubs.data.Club
-import uk.ac.tees.w9640628.uniclubs.data.ClubData
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
@@ -56,21 +53,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import uk.ac.tees.w9640628.uniclubs.ui.theme.UniClubsTheme
+import uk.ac.tees.w9640628.uniclubs.viewmodels.ClubViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomePage(
     modifier: Modifier = Modifier,
-    clubList: List<Club>,
+    viewModel: ClubViewModel,
     navController: NavHostController,
     onJoinClicked: (String) -> Unit = {}
 ) {
     var drawerState = rememberDrawerState( DrawerValue.Closed)
     var selectedItem by remember { mutableStateOf(0) }
     val scope = rememberCoroutineScope()
+
+    val clubList by viewModel.clubList. collectAsState()
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -174,19 +175,20 @@ fun ClubList(clubList: List<Club>, modifier: Modifier = Modifier){
 fun MakeCard(
     club: Club,
     onJoinClicked: (String) -> Unit = {},
-    modifier: Modifier = Modifier){
+    modifier: Modifier = Modifier
+) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         modifier = modifier
-            .padding(start = 12.dp,end=12.dp,top=8.dp,bottom=8.dp)
+            .padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 8.dp)
     ) {
-        Column(modifier = modifier
-            .padding(12.dp)
-        ){
-            Image(
-                painter = painterResource(club.imageResId),
+        Column(
+            modifier = modifier.padding(12.dp)
+        ) {
+            AsyncImage(
+                model = club.image,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -204,10 +206,11 @@ fun MakeCard(
                 modifier = modifier.padding(4.dp)
             )
             Button(
-                onClick = {onJoinClicked},
+                onClick = { onJoinClicked(club.id) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.tertiary,
-                    contentColor = Color.White),
+                    contentColor = Color.White
+                ),
                 modifier = modifier.align(Alignment.End)
             ) {
                 Text("Join")
@@ -218,10 +221,14 @@ fun MakeCard(
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview2() {
+fun HomePagePreview() {
     val navController = rememberNavController()
+    val viewModel = ClubViewModel() // Replace with your actual ViewModel initialization
 
     UniClubsTheme(useDarkTheme = false) {
-        HomePage(clubList = ClubData().loadClubs(), navController = navController)
+        HomePage(
+            viewModel = viewModel,
+            navController = navController
+        )
     }
 }
