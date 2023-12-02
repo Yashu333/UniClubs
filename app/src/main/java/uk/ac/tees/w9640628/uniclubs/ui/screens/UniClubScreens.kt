@@ -10,8 +10,10 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import uk.ac.tees.w9640628.uniclubs.viewmodels.ClubViewModel
+import uk.ac.tees.w9640628.uniclubs.viewmodels.JoinClubViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.LoginViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.RegisterViewModel
+import uk.ac.tees.w9640628.uniclubs.viewmodels.UserViewModel
 
 enum class UniClubsScreen() {
     Login,
@@ -52,8 +54,11 @@ fun AppNavigation(){
         composable("home"){
             HomePage(
                 viewModel = ClubViewModel(),
+                userViewModel = UserViewModel(),
+                joinClubViewModel = JoinClubViewModel(),
                 navController = navController,
-                onJoinClicked = {}
+                onJoinClicked = {},
+
             )
         }
         composable("CreateClub"){

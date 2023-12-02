@@ -1,6 +1,7 @@
 package uk.ac.tees.w9640628.uniclubs.ui.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -8,6 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.collectAsState
+import kotlinx.coroutines.flow.firstOrNull
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,6 +48,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,9 +58,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import uk.ac.tees.w9640628.uniclubs.ui.theme.UniClubsTheme
 import uk.ac.tees.w9640628.uniclubs.viewmodels.ClubViewModel
+import uk.ac.tees.w9640628.uniclubs.viewmodels.JoinClubViewModel
+import uk.ac.tees.w9640628.uniclubs.viewmodels.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -65,6 +74,8 @@ fun HomePage(
     modifier: Modifier = Modifier,
     viewModel: ClubViewModel,
     navController: NavHostController,
+    userViewModel: UserViewModel,
+    joinClubViewModel: JoinClubViewModel,
     onJoinClicked: (String) -> Unit = {}
 ) {
     var drawerState = rememberDrawerState( DrawerValue.Closed)
@@ -126,6 +137,9 @@ fun HomePage(
                         onClick = {
                             selectedItem = 3
                             // Handle all clubs item click (e.g., navigate to all clubs)
+                            navController.navigate("login"){
+                                popUpTo("login")
+                            }
                             scope.launch {
                                 drawerState.close()
                             }
@@ -154,29 +168,43 @@ fun HomePage(
                 }
             ){
                 // Screen Content
-                ClubList(clubList = clubList,modifier.padding(top = 66.dp))
+                ClubList(clubList = clubList, modifier.padding(top = 66.dp)) { clubId ->
+                    onJoinClicked(clubId)
             }
     }
-}
+}}
+
 
 @Composable
-fun ClubList(clubList: List<Club>, modifier: Modifier = Modifier){
+fun ClubList(clubList: List<Club>, modifier: Modifier = Modifier, onJoinClicked: (String) -> Unit) {
+
+    val joinClubViewModel = JoinClubViewModel()
+    val userViewModel = UserViewModel()
+
+    Log.i("clubs","Clubs are being created")
     LazyColumn(modifier = modifier) {
         items(clubList) { club ->
             MakeCard(
                 club = club,
+                onJoinClicked = onJoinClicked,
+                joinClubViewModel = joinClubViewModel,
+                userViewModel = userViewModel,
                 modifier = Modifier.padding(0.dp)
             )
         }
     }
 }
 
+
 @Composable
 fun MakeCard(
     club: Club,
     onJoinClicked: (String) -> Unit = {},
+    userViewModel: UserViewModel,
+    joinClubViewModel: JoinClubViewModel,
     modifier: Modifier = Modifier
 ) {
+    var userEmail by remember { mutableStateOf("") }
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -206,7 +234,10 @@ fun MakeCard(
                 modifier = modifier.padding(4.dp)
             )
             Button(
-                onClick = { onJoinClicked(club.id) },
+                onClick = {
+                    val email = userViewModel.getUserEmail()
+                    joinClubViewModel.joinClub(email.toString(),club.id)
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.tertiary,
                     contentColor = Color.White
@@ -215,20 +246,29 @@ fun MakeCard(
             ) {
                 Text("Join")
             }
+
+
+
+
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
 fun HomePagePreview() {
     val navController = rememberNavController()
     val viewModel = ClubViewModel() // Replace with your actual ViewModel initialization
+    val userViewModel = UserViewModel()
+    val joinClubViewModel = JoinClubViewModel()
 
     UniClubsTheme(useDarkTheme = false) {
         HomePage(
             viewModel = viewModel,
-            navController = navController
+            navController = navController,
+            userViewModel = userViewModel,
+            joinClubViewModel = joinClubViewModel
         )
     }
 }
