@@ -233,20 +233,31 @@ fun MakeCard(
                 fontSize = 15.sp,
                 modifier = modifier.padding(4.dp)
             )
+            var hasUserJoined by remember { mutableStateOf(false) }
+
+            // Fetch the user's joined clubs asynchronously
+            userViewModel.getUserJoinedClubs { userJoinedClubs ->
+                if (userJoinedClubs.contains(club.id)) {
+                    hasUserJoined = true
+                }
+            }
+
             Button(
                 onClick = {
                     val email = userViewModel.getUserEmail()
-                    joinClubViewModel.joinClub(email.toString(),club.id)
+                    if (email != null) {
+                        joinClubViewModel.joinClub(email, club.id)
+                        hasUserJoined = true
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.tertiary,
+                    containerColor = if (hasUserJoined) Color.Gray else MaterialTheme.colorScheme.tertiary,
                     contentColor = Color.White
                 ),
                 modifier = modifier.align(Alignment.End)
             ) {
-                Text("Join")
+                Text(if (hasUserJoined) "Joined" else "Join")
             }
-
 
 
 
