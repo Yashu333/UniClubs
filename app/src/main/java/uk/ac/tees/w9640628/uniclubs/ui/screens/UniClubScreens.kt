@@ -64,6 +64,9 @@ fun AppNavigation(){
         composable("CreateClub"){
             CreateClub()
         }
+        composable("MyClubs"){
+            MyClubs()
+        }
     }
 
 }

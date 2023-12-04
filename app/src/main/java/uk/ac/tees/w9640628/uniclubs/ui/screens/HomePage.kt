@@ -95,11 +95,12 @@ fun HomePage(
                     Text("Navigation", modifier = Modifier.padding(16.dp))
                     Divider()
                     NavigationDrawerItem(
-                        label = { Text(text = "My Clubs") },
+                        label = { Text(text = "All Clubs") },
                         selected = selectedItem == 0,
                         onClick = {
                             selectedItem = 0
                             // Handle home item click (e.g., navigate to home)
+                            navController.navigate("home")
                             scope.launch {
                                 drawerState.close()
                             }
@@ -120,11 +121,12 @@ fun HomePage(
                         icon = {Icon(imageVector = Icons.Default.Create, contentDescription = null)}
                     )
                     NavigationDrawerItem(
-                        label = { Text(text = "All Clubs") },
+                        label = { Text(text = "My Clubs") },
                         selected = selectedItem == 2,
                         onClick = {
                             selectedItem = 2
                             // Handle all clubs item click (e.g., navigate to all clubs)
+                            navController.navigate("MyClubs")
                             scope.launch {
                                 drawerState.close()
                             }
@@ -181,7 +183,6 @@ fun ClubList(clubList: List<Club>, modifier: Modifier = Modifier, onJoinClicked:
     val joinClubViewModel = JoinClubViewModel()
     val userViewModel = UserViewModel()
 
-    Log.i("clubs","Clubs are being created")
     LazyColumn(modifier = modifier) {
         items(clubList) { club ->
             MakeCard(
@@ -258,8 +259,6 @@ fun MakeCard(
             ) {
                 Text(if (hasUserJoined) "Joined" else "Join")
             }
-
-
 
         }
     }
