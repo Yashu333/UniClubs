@@ -1,6 +1,5 @@
 package uk.ac.tees.w9640628.uniclubs.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
