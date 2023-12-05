@@ -103,7 +103,6 @@ fun ClubList1 (clubList: List<Club>, modifier: Modifier = Modifier) {
                 club = club,
                 modifier = Modifier.padding(0.dp).clickable {
                     // Navigate to the chat page for the selected club
-                    navController.navigate("chat/${club.id}")
                 }
             )
         }

@@ -34,11 +34,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import uk.ac.tees.w9640628.uniclubs.viewmodels.UpdateClubViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateClub(modifier: Modifier = Modifier) {
+fun CreateClub(navController:NavHostController,modifier: Modifier = Modifier) {
+
+    val updateClubViewModel = UpdateClubViewModel()
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var selectedImageUrl by remember { mutableStateOf<String?>("https://firebasestorage.googleapis.com/v0/b/uniclubs-65916.appspot.com/o/ArtClub.jpg?alt=media&token=86eaf304-7261-4fc5-959d-abe6812c6bed") }
@@ -72,7 +76,9 @@ fun CreateClub(modifier: Modifier = Modifier) {
                 model = selectedImageUrl,
                 contentDescription = null,
                 modifier = modifier
-                    .height(150.dp).padding(start = 30.dp, end = 30.dp).clip(RoundedCornerShape(16.dp)),
+                    .height(150.dp)
+                    .padding(start = 30.dp, end = 30.dp)
+                    .clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = modifier.height(8.dp))
@@ -91,10 +97,12 @@ fun CreateClub(modifier: Modifier = Modifier) {
                 value = description,
                 onValueChange = { description = it },
                 label = { Text("Description") },
-                singleLine = true,
             )
             Spacer(modifier = modifier.height(12.dp))
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = {
+                updateClubViewModel.updateClub(selectedImageUrl ?: "", title, description,id=5)
+                navController.navigate("home")
+            }) {
                 Text("Submit")
             }
             Spacer(modifier = modifier.height(8.dp))
@@ -126,7 +134,9 @@ fun CreateClub(modifier: Modifier = Modifier) {
                                 contentDescription = null,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(120.dp)
+                                    .height(150.dp)
+                                    .padding(12.dp)
+                                    .clip(RoundedCornerShape(16.dp))
                                     .clickable {
                                         selectedImageUrl = imageUrl
                                         dialogOpenState.value = false
