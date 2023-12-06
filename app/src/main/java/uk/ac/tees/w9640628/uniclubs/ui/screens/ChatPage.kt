@@ -18,6 +18,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +45,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import uk.ac.tees.w9640628.uniclubs.viewmodels.AudioRecordViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.ChatViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.ClubViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.UserViewModel
@@ -142,7 +145,9 @@ fun ChatPage(
                             messageText = ""
                         }
                     },
-                    onPhotoClick = { /* Handle photo click */ },
+                    onPhotoClick = {
+                                   navController.navigate("camera")
+                    },
                     onLocationClick = { /* Handle location click */ },
                     onMicClick = { /* Handle microphone click */ }
                 )
@@ -171,10 +176,11 @@ fun BottomBarWithTextField(
     onLocationClick: () -> Unit,
     onMicClick: () -> Unit
 ) {
+    val audioRecordViewModel = AudioRecordViewModel()
     BottomAppBar(
         modifier = modifier
             .padding(4.dp)
-            .height(100.dp),
+            .height(90.dp),
         content = {
             Row(
                 modifier = Modifier
@@ -190,8 +196,7 @@ fun BottomBarWithTextField(
                     onValueChange = { onMessageTextChanged(it) },
                     modifier = Modifier
                         .weight(1f)
-                        .padding(8.dp)
-                        .height(60.dp), // Adjust the height as needed
+                        .padding(8.dp),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Send
                     ),
@@ -201,7 +206,7 @@ fun BottomBarWithTextField(
                         }
                     ),
                     singleLine = true,
-                    placeholder = { Text("Type a message") }
+                    placeholder = { Text("Type") }
                 )
 
                 // Spacer to separate text input field and icons
@@ -216,6 +221,28 @@ fun BottomBarWithTextField(
                     Icon(
                         imageVector = Icons.Default.Send,
                         contentDescription = "Send"
+                    )
+                }
+
+                IconButton(
+                    onClick = {
+                        onPhotoClick()
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Camera,
+                        contentDescription = "Camera"
+                    )
+                }
+
+                IconButton(
+                    onClick = {
+                        onMicClick()
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Mic,
+                        contentDescription = "Mic"
                     )
                 }
             }

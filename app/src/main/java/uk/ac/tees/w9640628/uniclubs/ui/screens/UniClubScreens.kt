@@ -72,6 +72,11 @@ fun AppNavigation(){
             ChatPage(navController,clubId ?: "", viewModel )
         }
 
+        composable("camera"){
+            Camera()
+        }
+
+
     }
 
 }
