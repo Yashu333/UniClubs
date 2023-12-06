@@ -28,22 +28,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import uk.ac.tees.w9640628.uniclubs.data.Club
-import uk.ac.tees.w9640628.uniclubs.ui.theme.UniClubsTheme
 import uk.ac.tees.w9640628.uniclubs.viewmodels.ClubViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.UserViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyClubs(modifier: Modifier = Modifier) {
+fun MyClubs(modifier: Modifier = Modifier,navController: NavHostController) {
     val clubViewModel = viewModel<ClubViewModel>()
     val userViewModel = viewModel<UserViewModel>()
     var joinedClubList by remember { mutableStateOf<List<String>>(emptyList()) }
@@ -86,7 +83,7 @@ fun MyClubs(modifier: Modifier = Modifier) {
 
         }
         else{
-            ClubList1(clubList = filteredClubs,modifier.padding(top = 66.dp))
+            ClubList1(clubList = filteredClubs,modifier.padding(top = 66.dp),navController=navController)
         }
     }
 
@@ -94,15 +91,15 @@ fun MyClubs(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun ClubList1 (clubList: List<Club>, modifier: Modifier = Modifier) {
+fun ClubList1 (clubList: List<Club>, modifier: Modifier = Modifier,navController: NavHostController) {
 
-    val navController: NavHostController = rememberNavController()
     LazyColumn(modifier = modifier) {
         items(clubList) { club ->
             MakeCard1(
                 club = club,
                 modifier = Modifier.padding(0.dp).clickable {
                     // Navigate to the chat page for the selected club
+                    navController.navigate("clubChat/${club.id}")
                 }
             )
         }
@@ -147,10 +144,4 @@ fun MakeCard1(
     }
 }
 
-@Preview
-@Composable
-fun MyClubsPreview(){
-    UniClubsTheme() {
-        MyClubs()
-    }
-}
+

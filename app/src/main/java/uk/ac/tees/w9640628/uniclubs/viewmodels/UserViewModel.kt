@@ -38,4 +38,32 @@ class UserViewModel : ViewModel() {
             }
     }
 
+    fun getUserFirstName(callback: (String) -> Unit) {
+        val usersCollection = FirebaseFirestore.getInstance().collection("users")
+
+        // Check if currentUser and currentUser.email are not null before proceeding
+        val userEmail = currentUser?.email
+        if (userEmail != null) {
+            // Query for the document where the 'email' field matches 'userEmail'
+            usersCollection.whereEqualTo("email", userEmail).get()
+                .addOnSuccessListener { querySnapshot ->
+                    for (document in querySnapshot.documents) {
+                        // Update the 'joinedClubs' field in the user's document or create it if not present
+                        val userFirstName = document.getString("firstName")
+                        if (userFirstName != null) {
+                            callback(userFirstName)
+                            return@addOnSuccessListener
+                        }
+                    }
+                    callback("") // or any other appropriate default value
+                }
+                .addOnFailureListener { e ->
+                    callback("") // or any other appropriate default value
+                }
+        } else {
+            callback("") // or any other appropriate default value
+        }
+    }
+
+
 }

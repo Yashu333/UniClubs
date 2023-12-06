@@ -1,9 +1,13 @@
 package uk.ac.tees.w9640628.uniclubs.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.tasks.await
 import uk.ac.tees.w9640628.uniclubs.data.Club
 
 class ClubViewModel : ViewModel() {
@@ -39,6 +43,26 @@ class ClubViewModel : ViewModel() {
 
             // Update the StateFlow with the new data
             _clubList.value = clubs
+        }
+    }
+
+    suspend fun getClubName(clubId: String,context: Context): String? {
+        val clubsCollection = Firebase.firestore.collection("Clubs")
+
+        // Use await() to make the Firestore call synchronous within a coroutine
+        return try {
+            val documentSnapshot = clubsCollection.document(clubId).get().await()
+
+            // Check if the document exists
+            if (documentSnapshot.exists()) {
+                // Get the value of the 'club.name' field
+                documentSnapshot.getString("Name")
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            // Handle any exceptions that may occur during the Firestore operation
+            null
         }
     }
 }
