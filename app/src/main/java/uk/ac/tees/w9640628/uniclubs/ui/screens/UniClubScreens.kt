@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import uk.ac.tees.w9640628.uniclubs.viewmodels.CameraViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.ClubViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.JoinClubViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.LoginViewModel
@@ -73,7 +74,8 @@ fun AppNavigation(){
         }
 
         composable("camera"){
-            Camera()
+            val cameraViewModel = CameraViewModel()
+            Camera(viewModel = cameraViewModel)
         }
 
 
