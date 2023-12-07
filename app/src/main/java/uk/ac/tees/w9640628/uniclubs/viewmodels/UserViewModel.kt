@@ -10,8 +10,6 @@ class UserViewModel : ViewModel() {
     fun getUserEmail(): String? {
         // Reload the user's data to get the actual email
         currentUser?.reload()?.addOnCompleteListener {
-            // Access the email of the signed-in user
-            val userEmail = currentUser?.email
         }
 
         // Return the current email value (may still be obfuscated)

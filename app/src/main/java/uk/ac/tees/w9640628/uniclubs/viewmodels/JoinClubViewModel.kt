@@ -1,7 +1,6 @@
 package uk.ac.tees.w9640628.uniclubs.viewmodels
 
 import androidx.lifecycle.ViewModel
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 
@@ -25,13 +24,7 @@ class JoinClubViewModel : ViewModel() {
                         .addOnSuccessListener {
                             // Club joined successfully
                         }
-                        .addOnFailureListener { e ->
-                            // Handle failure
-                        }
                 }
-            }
-            .addOnFailureListener { e ->
-                // Handle failure
             }
     }
 }

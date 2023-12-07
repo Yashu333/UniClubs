@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.windowInsetsEndWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContactPage
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Logout
@@ -64,12 +65,9 @@ import uk.ac.tees.w9640628.uniclubs.viewmodels.UserViewModel
 fun HomePage(
     modifier: Modifier = Modifier,
     viewModel: ClubViewModel,
-    navController: NavHostController,
-    userViewModel: UserViewModel,
-    joinClubViewModel: JoinClubViewModel,
-    onJoinClicked: (String) -> Unit = {}
+    navController: NavHostController
 ) {
-    var drawerState = rememberDrawerState( DrawerValue.Closed)
+    val drawerState = rememberDrawerState( DrawerValue.Closed)
     var selectedItem by remember { mutableStateOf(0) }
     val scope = rememberCoroutineScope()
 
@@ -125,10 +123,23 @@ fun HomePage(
                         icon = {Icon(imageVector = Icons.Default.SelectAll, contentDescription = null)}
                     )
                     NavigationDrawerItem(
-                        label = { Text(text = "Logout") },
+                        label = { Text(text = "Contact Us") },
                         selected = selectedItem == 3,
                         onClick = {
                             selectedItem = 3
+                            // Handle all clubs item click (e.g., navigate to all clubs)
+                            navController.navigate("contactUs")
+                            scope.launch {
+                                drawerState.close()
+                            }
+                        },
+                        icon = {Icon(imageVector = Icons.Default.ContactPage, contentDescription = null)}
+                    )
+                    NavigationDrawerItem(
+                        label = { Text(text = "Logout") },
+                        selected = selectedItem == 4,
+                        onClick = {
+                            selectedItem = 4
                             // Handle all clubs item click (e.g., navigate to all clubs)
                             navController.navigate("login"){
                                 popUpTo("login")
@@ -161,15 +172,13 @@ fun HomePage(
                 }
             ){
                 // Screen Content
-                ClubList(clubList = clubList, modifier.padding(top = 66.dp)) { clubId ->
-                    onJoinClicked(clubId)
-            }
+                ClubList(clubList = clubList, modifier.padding(top = 66.dp))
     }
 }}
 
 
 @Composable
-fun ClubList(clubList: List<Club>, modifier: Modifier = Modifier, onJoinClicked: (String) -> Unit) {
+fun ClubList(clubList: List<Club>, modifier: Modifier = Modifier) {
 
     val joinClubViewModel = JoinClubViewModel()
     val userViewModel = UserViewModel()
@@ -178,7 +187,6 @@ fun ClubList(clubList: List<Club>, modifier: Modifier = Modifier, onJoinClicked:
         items(clubList) { club ->
             MakeCard(
                 club = club,
-                onJoinClicked = onJoinClicked,
                 joinClubViewModel = joinClubViewModel,
                 userViewModel = userViewModel,
                 modifier = Modifier.padding(0.dp)
@@ -191,12 +199,10 @@ fun ClubList(clubList: List<Club>, modifier: Modifier = Modifier, onJoinClicked:
 @Composable
 fun MakeCard(
     club: Club,
-    onJoinClicked: (String) -> Unit = {},
     userViewModel: UserViewModel,
     joinClubViewModel: JoinClubViewModel,
     modifier: Modifier = Modifier
 ) {
-    var userEmail by remember { mutableStateOf("") }
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -261,15 +267,11 @@ fun MakeCard(
 fun HomePagePreview() {
     val navController = rememberNavController()
     val viewModel = ClubViewModel() // Replace with your actual ViewModel initialization
-    val userViewModel = UserViewModel()
-    val joinClubViewModel = JoinClubViewModel()
 
     UniClubsTheme(useDarkTheme = false) {
         HomePage(
             viewModel = viewModel,
-            navController = navController,
-            userViewModel = userViewModel,
-            joinClubViewModel = joinClubViewModel
+            navController = navController
         )
     }
 }

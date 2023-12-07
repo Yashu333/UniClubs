@@ -17,7 +17,6 @@ class ChatViewModel(context: Context) : ViewModel() {
         context.getSharedPreferences("ChatMessages", Context.MODE_PRIVATE)
 
     private val _messages = mutableStateListOf<Message>()
-    val messages: List<Message> get() = _messages
 
     init {
         // Load messages from SharedPreferences during ViewModel initialization

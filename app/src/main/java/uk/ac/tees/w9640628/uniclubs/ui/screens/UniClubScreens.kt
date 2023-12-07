@@ -1,6 +1,7 @@
 package uk.ac.tees.w9640628.uniclubs.ui.screens
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
@@ -8,25 +9,25 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import kotlinx.coroutines.delay
+import uk.ac.tees.w9640628.uniclubs.UniClubs
 import uk.ac.tees.w9640628.uniclubs.viewmodels.CameraViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.ClubViewModel
-import uk.ac.tees.w9640628.uniclubs.viewmodels.JoinClubViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.LoginViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.RegisterViewModel
-import uk.ac.tees.w9640628.uniclubs.viewmodels.UserViewModel
-
-enum class UniClubsScreen() {
-    Login,
-    HomePage,
-    CreateClub,
-    ClubUpdates
-}
 
 @Composable
 fun AppNavigation(){
+
     val navController: NavHostController = rememberNavController()
 
-    NavHost(navController = navController , startDestination = "loginGraph" ){
+        // Introduce a 1-second delay using LaunchedEffect
+    LaunchedEffect(Unit) {
+            delay(2000) // Delay for 2 seconds
+            navController.navigate("loginGraph")
+    }
+
+    NavHost(navController = navController , startDestination = "splashScreen" ){
 
         navigation(startDestination = "login",route="loginGraph"){
             composable("login") {
@@ -35,7 +36,9 @@ fun AppNavigation(){
                     viewModel = remember { LoginViewModel() },
                     onLoginClicked = { isLoginSuccessful ->
                         if (isLoginSuccessful) {
-                            navController.navigate("home")
+                            navController.navigate("home"){
+                                popUpTo("login")
+                            }
                         }
                     }
                 )
@@ -43,7 +46,7 @@ fun AppNavigation(){
         composable("register"){
             RegisterPage(
                 viewModel = remember { RegisterViewModel() },
-                onRegistrationSuccessful = { message ->
+                onRegistrationSuccessful = {
                     navController.navigate("home"){
                         popUpTo("login")
                     }
@@ -54,11 +57,7 @@ fun AppNavigation(){
         composable("home"){
             HomePage(
                 viewModel = ClubViewModel(),
-                userViewModel = UserViewModel(),
-                joinClubViewModel = JoinClubViewModel(),
                 navController = navController,
-                onJoinClicked = {},
-
             )
         }
         composable("CreateClub"){
@@ -75,9 +74,16 @@ fun AppNavigation(){
 
         composable("camera"){
             val cameraViewModel = CameraViewModel()
-            Camera(viewModel = cameraViewModel)
+            Camera(viewModel = cameraViewModel, navController = navController)
         }
 
+        composable("splashScreen"){
+            UniClubs()
+        }
+
+        composable("contactUs"){
+            ContactUs()
+        }
 
     }
 

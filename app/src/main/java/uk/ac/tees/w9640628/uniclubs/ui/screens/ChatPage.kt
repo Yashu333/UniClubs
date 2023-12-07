@@ -19,7 +19,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Camera
-import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,7 +35,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -45,13 +43,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import uk.ac.tees.w9640628.uniclubs.viewmodels.AudioRecordViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.ChatViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.ClubViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.UserViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatPage(
     navController: NavHostController,
@@ -110,9 +107,9 @@ fun ChatPage(
                                 .background(
                                     color = if (message.sender == userFirstName) {
                                         // Set a different color for the user's messages
-                                        MaterialTheme.colorScheme.primaryContainer
+                                        MaterialTheme.colorScheme.tertiaryContainer
                                     } else {
-                                        Color.LightGray
+                                        MaterialTheme.colorScheme.primaryContainer
                                     },
                                     shape = RoundedCornerShape(8.dp)
                                 )
@@ -147,9 +144,7 @@ fun ChatPage(
                     },
                     onPhotoClick = {
                                    navController.navigate("camera")
-                    },
-                    onLocationClick = { /* Handle location click */ },
-                    onMicClick = { /* Handle microphone click */ }
+                    }
                 )
             }
         }
@@ -172,11 +167,8 @@ fun BottomBarWithTextField(
     messageText: String,
     onMessageTextChanged: (String) -> Unit,
     onSendClick: () -> Unit,
-    onPhotoClick: () -> Unit,
-    onLocationClick: () -> Unit,
-    onMicClick: () -> Unit
+    onPhotoClick: () -> Unit
 ) {
-    val audioRecordViewModel = AudioRecordViewModel()
     BottomAppBar(
         modifier = modifier
             .padding(4.dp)
@@ -232,17 +224,6 @@ fun BottomBarWithTextField(
                     Icon(
                         imageVector = Icons.Default.Camera,
                         contentDescription = "Camera"
-                    )
-                }
-
-                IconButton(
-                    onClick = {
-                        onMicClick()
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Mic,
-                        contentDescription = "Mic"
                     )
                 }
             }
