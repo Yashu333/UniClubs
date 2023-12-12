@@ -46,15 +46,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
+import uk.ac.tees.w9640628.uniclubs.R
 import uk.ac.tees.w9640628.uniclubs.data.Club
-import uk.ac.tees.w9640628.uniclubs.ui.theme.UniClubsTheme
 import uk.ac.tees.w9640628.uniclubs.viewmodels.ClubViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.JoinClubViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.UserViewModel
@@ -67,10 +66,12 @@ fun HomePage(
     viewModel: ClubViewModel,
     navController: NavHostController
 ) {
+    // Nav bar state
     val drawerState = rememberDrawerState( DrawerValue.Closed)
     var selectedItem by remember { mutableStateOf(0) }
     val scope = rememberCoroutineScope()
 
+    // Clubs from Firestore
     val clubList by viewModel.clubList. collectAsState()
 
     ModalNavigationDrawer(
@@ -80,15 +81,16 @@ fun HomePage(
                 modifier = modifier.windowInsetsEndWidth(WindowInsets(right = 260.dp)) ,
                 windowInsets = WindowInsets.Companion.navigationBars,
                 content = {
-                    // Your drawer content here
+
                     Text("Navigation", modifier = Modifier.padding(16.dp))
                     Divider()
+                    // All clubs
                     NavigationDrawerItem(
-                        label = { Text(text = "All Clubs") },
+                        label = { Text(text = stringResource(R.string.all_clubs)) },
                         selected = selectedItem == 0,
                         onClick = {
                             selectedItem = 0
-                            // Handle home item click (e.g., navigate to home)
+                            // navigate to home
                             navController.navigate("home")
                             scope.launch {
                                 drawerState.close()
@@ -96,12 +98,13 @@ fun HomePage(
                         },
                         icon = {Icon(imageVector = Icons.Default.Home, contentDescription = null)}
                     )
+                    //Create Club
                     NavigationDrawerItem(
-                        label = { Text(text = "Create Club") },
+                        label = { Text(text = stringResource(R.string.create_club)) },
                         selected = selectedItem == 1,
                         onClick = {
                             selectedItem = 1
-                            // Handle create club item click (e.g., navigate to create club)
+                            // navigate to create club
                             navController.navigate("CreateClub")
                             scope.launch {
                                 drawerState.close()
@@ -109,12 +112,13 @@ fun HomePage(
                         },
                         icon = {Icon(imageVector = Icons.Default.Create, contentDescription = null)}
                     )
+                    //My Clubs
                     NavigationDrawerItem(
-                        label = { Text(text = "My Clubs") },
+                        label = { Text(text = stringResource(R.string.my_clubs)) },
                         selected = selectedItem == 2,
                         onClick = {
                             selectedItem = 2
-                            // Handle all clubs item click (e.g., navigate to all clubs)
+                            // navigate to my clubs
                             navController.navigate("MyClubs")
                             scope.launch {
                                 drawerState.close()
@@ -122,12 +126,13 @@ fun HomePage(
                         },
                         icon = {Icon(imageVector = Icons.Default.SelectAll, contentDescription = null)}
                     )
+                    //Contact Us
                     NavigationDrawerItem(
-                        label = { Text(text = "Contact Us") },
+                        label = { Text(text = stringResource(R.string.contact_us)) },
                         selected = selectedItem == 3,
                         onClick = {
                             selectedItem = 3
-                            // Handle all clubs item click (e.g., navigate to all clubs)
+                            // navigate to contact us page
                             navController.navigate("contactUs")
                             scope.launch {
                                 drawerState.close()
@@ -135,12 +140,12 @@ fun HomePage(
                         },
                         icon = {Icon(imageVector = Icons.Default.ContactPage, contentDescription = null)}
                     )
+                    //Logout
                     NavigationDrawerItem(
-                        label = { Text(text = "Logout") },
+                        label = { Text(text = stringResource(R.string.logout)) },
                         selected = selectedItem == 4,
                         onClick = {
                             selectedItem = 4
-                            // Handle all clubs item click (e.g., navigate to all clubs)
                             navController.navigate("login"){
                                 popUpTo("login")
                             }
@@ -157,14 +162,14 @@ fun HomePage(
             Scaffold(
                 topBar = {
                     TopAppBar(
-                        title = { Text(text = "UniClubs") },
+                        title = { Text(text = stringResource(R.string.app_title)) },
                         navigationIcon = {
                             IconButton(onClick = {
                                 scope.launch {
                                     drawerState.open()
                                 }
                             }) {
-                                Icon(imageVector = Icons.Default.Menu, contentDescription = "menu")
+                                Icon(imageVector = Icons.Default.Menu, contentDescription = stringResource(R.string.menu))
                             }
                         },
                         modifier = Modifier.statusBarsPadding()
@@ -213,6 +218,7 @@ fun MakeCard(
         Column(
             modifier = modifier.padding(12.dp)
         ) {
+            //To display images from internet
             AsyncImage(
                 model = club.image,
                 contentDescription = null,
@@ -233,13 +239,14 @@ fun MakeCard(
             )
             var hasUserJoined by remember { mutableStateOf(false) }
 
-            // Fetch the user's joined clubs asynchronously
+            // Fetch the user's joined clubs
             userViewModel.getUserJoinedClubs { userJoinedClubs ->
                 if (userJoinedClubs.contains(club.id)) {
                     hasUserJoined = true
                 }
             }
 
+            //Join and Joined button
             Button(
                 onClick = {
                     val email = userViewModel.getUserEmail()
@@ -258,20 +265,5 @@ fun MakeCard(
             }
 
         }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun HomePagePreview() {
-    val navController = rememberNavController()
-    val viewModel = ClubViewModel() // Replace with your actual ViewModel initialization
-
-    UniClubsTheme(useDarkTheme = false) {
-        HomePage(
-            viewModel = viewModel,
-            navController = navController
-        )
     }
 }

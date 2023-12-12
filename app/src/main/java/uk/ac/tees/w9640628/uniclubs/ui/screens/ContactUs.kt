@@ -19,10 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import uk.ac.tees.w9640628.uniclubs.R
 import uk.ac.tees.w9640628.uniclubs.ui.theme.UniClubsTheme
 
 @Composable
@@ -33,20 +35,23 @@ fun ContactUs(modifier: Modifier = Modifier){
         modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.primaryContainer)
     ) {
         Text(
-            text = "For any problems/queries contact:",
+            text = stringResource(R.string.queries),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = modifier.height(16.dp))
-        Details(icon = Icons.Filled.Person,text = "Yaswanth Sai")
-        Details(icon = Icons.Filled.Email,text = "W9640628@live.tees.ac.uk")
-        Details(icon = Icons.Filled.Phone,text = "+44 7482437730")
+
+        //Use the details function for all details
+        Details(icon = Icons.Filled.Person,text = stringResource(R.string.fname))
+        Details(icon = Icons.Filled.Email,text = stringResource(R.string.uni_email))
+        Details(icon = Icons.Filled.Phone,text = stringResource(R.string.phone_number))
     }
 }
 
 @Composable
 fun Details(text: String, icon: ImageVector, modifier: Modifier = Modifier) {
 
+        // For Text with a leading icon
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = icon,

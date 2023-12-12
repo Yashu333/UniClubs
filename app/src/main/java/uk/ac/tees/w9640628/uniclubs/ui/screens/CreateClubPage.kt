@@ -39,11 +39,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import uk.ac.tees.w9640628.uniclubs.R
 import uk.ac.tees.w9640628.uniclubs.viewmodels.UpdateClubViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -57,19 +59,19 @@ fun CreateClub(navController: NavHostController, modifier: Modifier = Modifier) 
     var selectedImageUrl by remember { mutableStateOf<String?>("https://firebasestorage.googleapis.com/v0/b/uniclubs-65916.appspot.com/o/ArtClub.jpg?alt=media&token=86eaf304-7261-4fc5-959d-abe6812c6bed") }
     val dialogOpenState = remember { mutableStateOf(false) }
 
+    // Choose Images for new club
     val imageUrls = listOf(
         "https://firebasestorage.googleapis.com/v0/b/uniclubs-65916.appspot.com/o/ArtClub.jpg?alt=media&token=86eaf304-7261-4fc5-959d-abe6812c6bed",
         "https://firebasestorage.googleapis.com/v0/b/uniclubs-65916.appspot.com/o/SportsClub.jpg?alt=media&token=504ec2f4-55fc-468e-af2b-7a8ae849196c",
         "https://firebasestorage.googleapis.com/v0/b/uniclubs-65916.appspot.com/o/DanceClub.jpg?alt=media&token=989217f7-f883-4769-af54-2a58eb1dbe34",
         "https://firebasestorage.googleapis.com/v0/b/uniclubs-65916.appspot.com/o/CodingClub.jpg?alt=media&token=802999ef-6fe7-4ce9-9cda-236ce1c444da",
         "https://firebasestorage.googleapis.com/v0/b/uniclubs-65916.appspot.com/o/PhotographyClub.jpg?alt=media&token=2fbdaa4c-9d08-4785-8155-952057d5e489"
-        // Add more image URLs as needed
     )
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Create a Club") },
+                title = { Text(text = stringResource(R.string.create_a_club)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
@@ -86,12 +88,13 @@ fun CreateClub(navController: NavHostController, modifier: Modifier = Modifier) 
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
-                    text = "Create a Club",
+                    text = stringResource(R.string.create_a_club),
                     fontSize = 32.sp,
                     modifier = modifier.padding(top = 24.dp)
                 )
                 Spacer(modifier = modifier.height(8.dp))
-                // Display the selected image or a placeholder
+
+                // To show the selected image from storage
                 AsyncImage(
                     model = selectedImageUrl,
                     contentDescription = null,
@@ -102,26 +105,34 @@ fun CreateClub(navController: NavHostController, modifier: Modifier = Modifier) 
                     contentScale = ContentScale.Crop
                 )
                 Spacer(modifier = modifier.height(8.dp))
+
+                //Select image button
                 Button(onClick = { dialogOpenState.value = true },colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.tertiary,
                     contentColor = Color.White
                 )) {
-                    Text("Select Image")
+                    Text(stringResource(R.string.select_image))
                 }
                 Spacer(modifier = modifier.height(28.dp))
+
+                //title and description text fields
                 TextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Title") },
+                    label = { Text(stringResource(R.string.title)) },
                     singleLine = true,
                 )
+
                 Spacer(modifier = modifier.height(12.dp))
+
                 TextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = { Text("Description") },
+                    label = { Text(stringResource(R.string.description)) },
                 )
                 Spacer(modifier = modifier.height(12.dp))
+
+                //submit button
                 Button(onClick = {
                     updateClubViewModel.updateClub(selectedImageUrl ?: "", title, description, id = 5)
                     navController.navigate("home"){
@@ -133,14 +144,14 @@ fun CreateClub(navController: NavHostController, modifier: Modifier = Modifier) 
                         contentColor = Color.White
                     )
                 ) {
-                    Text("Submit")
+                    Text(stringResource(R.string.submit))
                 }
                 Spacer(modifier = modifier.height(8.dp))
             }
         }
     )
 
-    // Dialog to display the list of images
+    // To display the list of images
     if (dialogOpenState.value) {
         Dialog(
             onDismissRequest = { dialogOpenState.value = false },

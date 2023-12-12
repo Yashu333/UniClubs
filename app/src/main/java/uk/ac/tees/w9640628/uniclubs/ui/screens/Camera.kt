@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
@@ -49,6 +50,7 @@ import com.google.firebase.storage.UploadTask
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
+import uk.ac.tees.w9640628.uniclubs.R
 import uk.ac.tees.w9640628.uniclubs.viewmodels.CameraViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,63 +73,53 @@ fun Camera(
     val chatImagesCollectionRef = firestore.collection("chatImages")
     val chatDocumentId = "M7S13R98PVAMmilv4ID5"
 
-    // Fetch image URLs from Firestore when the composable is first composed
+    // To fetch image URLs from Firestore
     LaunchedEffect(chatDocumentId) {
         while (true) {
             val documentSnapshot = chatImagesCollectionRef.document(chatDocumentId).get().await()
             val urls = documentSnapshot["images"] as? List<String> ?: emptyList()
             imagesFromFirebase = urls
 
-            // Optional: If you want to update the view model with fetched URLs
+            //updating the view model with fetched URLs
             viewModel.setImageUrlsFromFirestore(urls)
 
-            // Delay to avoid excessive queries
             delay(2000)
         }
     }
 
-
+    // open camera and take picture
     val captureImageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { captured ->
         if (captured) {
             // Upload the captured image to Firebase Storage
             imageCaptured?.let { capturedImage ->
-                val imageFileName = "image_${System.currentTimeMillis()}.png"
+                val imageFileName = "image_${System.currentTimeMillis()}.jpg"
                 val imageRef = storageRef.child(imageFileName)
                 val uploadTask: UploadTask = imageRef.putFile(capturedImage)
 
                 uploadTask.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        // Image uploaded successfully, get the download URL
+                        // get the download URL
                         imageRef.downloadUrl.addOnSuccessListener { uri ->
                             val url = uri.toString()
-                            println("Image uploaded. Download URL = $url")
 
                             // Update Firestore with the new URL
                             chatImagesCollectionRef
                                 .document(chatDocumentId)
                                 .update("images", FieldValue.arrayUnion(url))
                         }
-                    } else {
-                        // Handle upload failure
-                        println("Image upload failed.")
                     }
                 }
             }
-        } else {
-            // Handle capture failure or cancellation
-            println("Image capture canceled or failed.")
         }
     }
 
+    //save the file and launch activity result
     val selectFileLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("image/*")) { imageUri ->
             if (imageUri != null) {
                 // Process the selected file
                 imageCaptured = imageUri
                 captureImageLauncher.launch(imageUri)
-            } else {
-                // Handle file selection failure or cancellation
-                println("File selection failed or canceled.")
             }
         }
 
@@ -136,9 +128,6 @@ fun Camera(
             if (granted) {
                 // Launch the file selection when permission is granted
                 selectFileLauncher.launch("image_${System.currentTimeMillis()}.png")
-            } else {
-                // Handle permission denial
-                println("Permission denied.")
             }
         }
 
@@ -157,7 +146,7 @@ fun Camera(
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.outline)
+                modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.primaryContainer)
             ) {
                 // Display captured images from Firebase Storage
                 LazyColumn(
@@ -167,8 +156,7 @@ fun Camera(
                         .padding(start = 8.dp, end = 8.dp, bottom= 8.dp, top = 68.dp)
                 ) {
                     items(imagesFromFirebase) { imageUrl ->
-                        // Use Coil or any other image loading library to load and display images
-                        // For simplicity, AsyncImage is used here, but you might need to replace it
+                        // AsyncImage for loading images for the internet
                         LazyRow {
                             item {
                                 AsyncImage(
@@ -186,14 +174,14 @@ fun Camera(
                     }
                 }
 
-                // Example: Trigger the permission request when the button is clicked
+                // permission request when the button is clicked
                 Button(onClick = {
                     permissionLauncher.launch(Manifest.permission.CAMERA)
                 },colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.tertiary,
                     contentColor = Color.White
                 )) {
-                    Text("Capture Image")
+                    Text(stringResource(R.string.capture_image))
                 }
             }
         }

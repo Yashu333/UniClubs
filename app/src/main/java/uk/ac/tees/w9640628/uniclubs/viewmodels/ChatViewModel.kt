@@ -19,7 +19,6 @@ class ChatViewModel(context: Context) : ViewModel() {
     private val _messages = mutableStateListOf<Message>()
 
     init {
-        // Load messages from SharedPreferences during ViewModel initialization
         loadMessages()
     }
 

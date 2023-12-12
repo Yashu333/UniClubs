@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -56,6 +57,7 @@ fun LoginPage(
     viewModel: LoginViewModel = viewModel(),
     onLoginClicked: (Boolean) -> Unit = {}
 ) {
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
@@ -82,12 +84,14 @@ fun LoginPage(
                 Text(it, color = Color.White)
             }
         }
+        //Logo
         Image(
             painter = painterResource(id = R.drawable.loginlogo),
             contentDescription = null,
             modifier.size(164.dp)
         )
         Spacer(modifier = modifier.height(40.dp))
+
         Text(
             text = "Login",
             fontSize = 35.sp,
@@ -95,6 +99,7 @@ fun LoginPage(
         )
         Spacer(modifier = modifier.height(8.dp))
 
+        //email field
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -107,17 +112,18 @@ fun LoginPage(
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Mail,
-                    contentDescription = "Email"
+                    contentDescription = stringResource(R.string.email)
                 )
             },
             modifier = modifier.horizontalScroll(rememberScrollState())
         )
 
+        //Password Field
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             singleLine = true,
-            label = { Text("Password") },
+            label = { Text(stringResource(R.string.password)) },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
@@ -126,11 +132,12 @@ fun LoginPage(
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Lock,
-                    contentDescription = "Password"
+                    contentDescription = stringResource(R.string.password)
                 )
             },
         )
 
+        //Snack bar messages
         Button(
             onClick = {
                 if (email.isBlank() || password.isBlank()) {
@@ -158,13 +165,14 @@ fun LoginPage(
 
         Spacer(modifier = modifier.height(8.dp))
 
+        // Text button to navigate to register page
         TextButton(
             onClick = {
                 navController.navigate("register")
             }
         ) {
             Text(
-                "Not a user, Register here",
+                stringResource(R.string.register_here),
                 fontSize = 16.sp
             )
         }

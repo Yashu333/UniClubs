@@ -31,12 +31,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import uk.ac.tees.w9640628.uniclubs.R
 import uk.ac.tees.w9640628.uniclubs.data.Club
 import uk.ac.tees.w9640628.uniclubs.viewmodels.ClubViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.UserViewModel
@@ -45,11 +47,12 @@ import uk.ac.tees.w9640628.uniclubs.viewmodels.UserViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyClubs(modifier: Modifier = Modifier,navController: NavHostController) {
+
     val clubViewModel = viewModel<ClubViewModel>()
     val userViewModel = viewModel<UserViewModel>()
     var joinedClubList by remember { mutableStateOf<List<String>>(emptyList()) }
 
-    // Collect the user's joined clubs using the UserViewModel
+    // user joined clubs
     LaunchedEffect(true) {
         userViewModel.getUserJoinedClubs { clubs ->
             joinedClubList = clubs
@@ -59,7 +62,7 @@ fun MyClubs(modifier: Modifier = Modifier,navController: NavHostController) {
     // Collect the club list StateFlow from the ClubViewModel
     val clubList by clubViewModel.clubList.collectAsState()
 
-    // Filter the clubs based on the joined clubs
+    // Filter the clubs by joined clubs
     val filteredClubs = clubList.filter { club ->
         club.id in joinedClubList
     }
@@ -67,7 +70,7 @@ fun MyClubs(modifier: Modifier = Modifier,navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "My Clubs") },
+                title = { Text(text = stringResource(id = R.string.my_clubs)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
@@ -84,7 +87,7 @@ fun MyClubs(modifier: Modifier = Modifier,navController: NavHostController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Please join a club and come back here.",
+                    text = stringResource(R.string.please_join_clubs),
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center
                 )
@@ -92,6 +95,7 @@ fun MyClubs(modifier: Modifier = Modifier,navController: NavHostController) {
 
         }
         else{
+            //display all the joined clubs
             ClubList1(clubList = filteredClubs,modifier.padding(top = 66.dp),navController=navController)
         }
     }
@@ -106,16 +110,18 @@ fun ClubList1 (clubList: List<Club>, modifier: Modifier = Modifier,navController
         items(clubList) { club ->
             MakeCard1(
                 club = club,
-                modifier = Modifier.padding(0.dp).clickable {
-                    // Navigate to the chat page for the selected club
-                    navController.navigate("clubChat/${club.id}")
-                }
+                modifier = Modifier
+                    .padding(0.dp)
+                    .clickable {
+                        // Navigate to the chat page for the selected club dynamically
+                        navController.navigate("clubChat/${club.id}")
+                    }
             )
         }
     }
 }
 
-
+// Clubs are displayed with card design
 @Composable
 fun MakeCard1(
     club: Club,

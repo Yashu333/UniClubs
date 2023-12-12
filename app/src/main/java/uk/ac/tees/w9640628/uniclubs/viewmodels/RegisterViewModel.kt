@@ -29,7 +29,7 @@ class RegisterViewModel : ViewModel() {
                     .set(user)
                     .await()
             } catch (e: Exception) {
-                // Handle registration failure
+                null
             }
         }
     }

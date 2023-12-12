@@ -38,11 +38,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import uk.ac.tees.w9640628.uniclubs.R
 import uk.ac.tees.w9640628.uniclubs.viewmodels.ChatViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.ClubViewModel
 import uk.ac.tees.w9640628.uniclubs.viewmodels.UserViewModel
@@ -59,16 +61,19 @@ fun ChatPage(
     var messageText by remember { mutableStateOf("") }
     var userFirstName by remember { mutableStateOf("") }
 
+    //view models
     val clubViewModel = ClubViewModel()
     val userViewModel = UserViewModel()
 
     val context = LocalContext.current
     var clubName by remember { mutableStateOf("") }
+
+    //Get the current club
     LaunchedEffect(clubId) {
         clubName = clubViewModel.getClubName(clubId, context).toString()
     }
 
-// Call getUserFirstName when the composable is first composed
+    //getUserFirstName at the start
     LaunchedEffect(Unit) {
         userViewModel.getUserFirstName { firstName ->
             userFirstName = firstName
@@ -99,14 +104,14 @@ fun ChatPage(
                         .fillMaxWidth()
                 ) {
                     items(viewModel.getMessagesForClub(clubId)) { message ->
-                        // Display each chat message with sender's username
+                        // To Display messages
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp)
                                 .background(
                                     color = if (message.sender == userFirstName) {
-                                        // Set a different color for the user's messages
+                                        // green background for sender message
                                         MaterialTheme.colorScheme.tertiaryContainer
                                     } else {
                                         MaterialTheme.colorScheme.primaryContainer
@@ -114,16 +119,18 @@ fun ChatPage(
                                     shape = RoundedCornerShape(8.dp)
                                 )
                         ) {
+                            //name
                             Text(
                                 text = message.sender,
-                                color = Color.Gray, // Set text color for the sender
+                                color = Color.Gray,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 14.sp,
                                 modifier = Modifier.padding(4.dp)
                             )
+                            //message
                             Text(
                                 text = message.text,
-                                color = Color.Black, // Set text color for the message
+                                color = Color.Black,
                                 fontSize = 16.sp,
                                 modifier = Modifier.padding(4.dp)
                             )
@@ -179,10 +186,10 @@ fun BottomBarWithTextField(
                     .fillMaxWidth()
                     .padding(8.dp)
             ) {
-                // Spacer to separate text input field and icons
+
                 Spacer(modifier = Modifier.width(8.dp))
 
-                // Compose the text field for composing messages
+                // message filed
                 OutlinedTextField(
                     value = messageText,
                     onValueChange = { onMessageTextChanged(it) },
@@ -201,10 +208,9 @@ fun BottomBarWithTextField(
                     placeholder = { Text("Type") }
                 )
 
-                // Spacer to separate text input field and icons
                 Spacer(modifier = Modifier.width(8.dp))
 
-                // Compose the send button
+                // send button icon
                 IconButton(
                     onClick = {
                         onSendClick()
@@ -212,10 +218,11 @@ fun BottomBarWithTextField(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Send,
-                        contentDescription = "Send"
+                        contentDescription = stringResource(R.string.send)
                     )
                 }
 
+                // Camera icon button
                 IconButton(
                     onClick = {
                         onPhotoClick()
@@ -223,7 +230,7 @@ fun BottomBarWithTextField(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Camera,
-                        contentDescription = "Camera"
+                        contentDescription = stringResource(R.string.camera)
                     )
                 }
             }
