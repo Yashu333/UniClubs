@@ -16,18 +16,17 @@ class ClubViewModel : ViewModel() {
     val clubList: StateFlow<List<Club>> get() = _clubList
 
     init {
-        // Call a function to fetch clubs from Firestore when the ViewModel is created
+        // fetch clubs from Firestore
         fetchClubs()
     }
 
     private fun fetchClubs() {
-        // Reference to the "Clubs" collection
+
         val clubsCollection = firestore.collection("Clubs")
 
         // Observe changes in the collection and update the StateFlow
         clubsCollection.addSnapshotListener { snapshot, error ->
             if (error != null) {
-                // Handle error
                 return@addSnapshotListener
             }
 
@@ -41,7 +40,7 @@ class ClubViewModel : ViewModel() {
                 Club(id, name, description, image)
             } ?: emptyList()
 
-            // Update the StateFlow with the new data
+            // Update the StateFlow
             _clubList.value = clubs
         }
     }
@@ -61,7 +60,6 @@ class ClubViewModel : ViewModel() {
                 null
             }
         } catch (e: Exception) {
-            // Handle any exceptions that may occur during the Firestore operation
             null
         }
     }

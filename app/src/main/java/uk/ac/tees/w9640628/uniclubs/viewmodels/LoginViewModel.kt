@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 class LoginViewModel : ViewModel() {
 
+    //Check if email and password matches with firebase authentication
     fun loginUser(email: String, password: String, onLoginResult: (Boolean) -> Unit) {
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->

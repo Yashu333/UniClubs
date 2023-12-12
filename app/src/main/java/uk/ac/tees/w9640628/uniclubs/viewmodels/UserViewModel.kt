@@ -8,11 +8,11 @@ class UserViewModel : ViewModel() {
 
     val currentUser = FirebaseAuth.getInstance().currentUser
     fun getUserEmail(): String? {
-        // Reload the user's data to get the actual email
+        // Reloading the data to get email
         currentUser?.reload()?.addOnCompleteListener {
         }
 
-        // Return the current email value (may still be obfuscated)
+        // Return the current email value
         return currentUser?.email
     }
 
@@ -20,7 +20,7 @@ class UserViewModel : ViewModel() {
         val usersCollection = FirebaseFirestore.getInstance().collection("users")
         var currentJoinClubs: List<String> = emptyList()
 
-        // Query for the document where the 'email' field matches 'userEmail'
+        // document where the 'email' field matches 'userEmail'
         usersCollection.whereEqualTo("email", currentUser?.email).get()
             .addOnSuccessListener { querySnapshot ->
                 for (document in querySnapshot.documents) {
@@ -31,7 +31,6 @@ class UserViewModel : ViewModel() {
                 callback(currentJoinClubs)
             }
             .addOnFailureListener { e ->
-                // Handle failure
                 callback(emptyList())
             }
     }
@@ -39,10 +38,10 @@ class UserViewModel : ViewModel() {
     fun getUserFirstName(callback: (String) -> Unit) {
         val usersCollection = FirebaseFirestore.getInstance().collection("users")
 
-        // Check if currentUser and currentUser.email are not null before proceeding
+        // Check if currentUser and currentUser.email are not null
         val userEmail = currentUser?.email
         if (userEmail != null) {
-            // Query for the document where the 'email' field matches 'userEmail'
+            // document where the 'email' field matches 'userEmail'
             usersCollection.whereEqualTo("email", userEmail).get()
                 .addOnSuccessListener { querySnapshot ->
                     for (document in querySnapshot.documents) {
@@ -53,13 +52,7 @@ class UserViewModel : ViewModel() {
                             return@addOnSuccessListener
                         }
                     }
-                    callback("") // or any other appropriate default value
                 }
-                .addOnFailureListener { e ->
-                    callback("") // or any other appropriate default value
-                }
-        } else {
-            callback("") // or any other appropriate default value
         }
     }
 

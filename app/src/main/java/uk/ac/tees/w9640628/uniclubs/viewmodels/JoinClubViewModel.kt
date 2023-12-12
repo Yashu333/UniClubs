@@ -8,10 +8,10 @@ class JoinClubViewModel : ViewModel() {
     private val firestore = FirebaseFirestore.getInstance()
 
     fun joinClub(userEmail: String, clubName: String) {
-        // Reference to the 'users' collection
+        //  'users' collection
         val usersCollection = firestore.collection("users")
 
-        // Query for the document where the 'email' field matches 'userEmail'
+        // which 'email' field matches 'userEmail' in firestore
         usersCollection.whereEqualTo("email", userEmail).get()
             .addOnSuccessListener { querySnapshot ->
                 for (document in querySnapshot.documents) {
@@ -21,9 +21,6 @@ class JoinClubViewModel : ViewModel() {
 
                     val data = hashMapOf("joinedClubs" to updatedJoinClubs.toList())
                     usersCollection.document(document.id).set(data, SetOptions.merge())
-                        .addOnSuccessListener {
-                            // Club joined successfully
-                        }
                 }
             }
     }

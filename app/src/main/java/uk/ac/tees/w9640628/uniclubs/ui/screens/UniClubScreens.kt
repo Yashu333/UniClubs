@@ -21,7 +21,7 @@ fun AppNavigation(){
 
     val navController: NavHostController = rememberNavController()
 
-        // Introduce a 1-second delay using LaunchedEffect
+    // delay for splash screen using LaunchedEffect
     LaunchedEffect(Unit) {
             delay(2000) // Delay for 2 seconds
             navController.navigate("loginGraph")
@@ -29,6 +29,7 @@ fun AppNavigation(){
 
     NavHost(navController = navController , startDestination = "splashScreen" ){
 
+        // login graph with login and register pages
         navigation(startDestination = "login",route="loginGraph"){
             composable("login") {
                 LoginPage(
@@ -54,33 +55,44 @@ fun AppNavigation(){
             )
         }
         }
+
+        //home
         composable("home"){
             HomePage(
                 viewModel = ClubViewModel(),
                 navController = navController,
             )
         }
+
+        //create a club
         composable("CreateClub"){
             CreateClub(navController = navController)
         }
+
+        //my clubs
         composable("MyClubs"){
             MyClubs(navController = navController)
         }
+
+        //For Dynamic chat page navigation
         composable("clubChat/{clubId}") { backStackEntry ->
             val clubId = backStackEntry.arguments?.getString("clubId")
             val viewModel = rememberChatViewModel(LocalContext.current) // Instantiate your ChatViewModel here if you haven't already
             ChatPage(navController,clubId ?: "", viewModel )
         }
 
+        //Camera screen
         composable("camera"){
             val cameraViewModel = CameraViewModel()
             Camera(viewModel = cameraViewModel, navController = navController)
         }
 
+        //Splash Screen
         composable("splashScreen"){
             UniClubs()
         }
 
+        //contact page
         composable("contactUs"){
             ContactUs()
         }
