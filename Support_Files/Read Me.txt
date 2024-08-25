@@ -1,0 +1,21 @@
+This is a project named "UniClubs" which is part of ICA for Mobile App Development module.
+
+Folders:
+UniClubs - Android Studio App
+ - Open this in android studio and connect your phone, run the app
+Recordings - recordings of app demo and app working.
+ - If you can't open the videos with your local media player, try using VLC.
+
+Files:
+Development Report - Supporting document for UniClubs.
+UniClubs PPT
+
+Resources Folder:
+All the resources used are present here.
+
+1. Jira -- All milestone screenshots
+2. Figma Designs -- All the wire frame designs
+3. App Screenshots -- The app screenshots
+4. Club Images -- The images used for the clubs
+5. Theme -- Theme used
+6. Logo -- Logo Design
